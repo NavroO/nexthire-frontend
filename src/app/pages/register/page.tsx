@@ -1,5 +1,5 @@
+import RegistrationForm from "@/app/components/RegistrationForm";
 import Head from "next/head";
-import RegistrationForm from "../components/RegistrationForm";
 
 const Register = () => {
   return (

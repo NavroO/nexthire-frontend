@@ -1,276 +1,179 @@
+/* eslint-disable prefer-const */
 "use client";
 import { useState } from "react";
-import { CreateUserInput, UserRole, JobType } from "../types/types";
 
 const RegistrationForm = () => {
-  const [formData, setFormData] = useState<CreateUserInput>({
+  const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
-    phoneNumber: "",
-    role: UserRole.JOB_SEEKER,
-    profilePicture: "",
-    location: "",
-    workExperience: [],
-    education: [],
-    skills: [],
-    certifications: [],
-    jobPreferences: {
-      preferredIndustry: "",
-      preferredLocation: "",
-      preferredJobType: JobType.FULL_TIME,
-    },
-    languages: [],
-    socialLinks: {
-      linkedIn: "",
-      github: "",
-      portfolio: "",
-    },
-    isPremium: false,
-    applicationHistory: [],
-    jobFitScore: 0,
-    accountCreated: new Date(),
-    profileLastUpdated: new Date(),
   });
+  interface FormErrors {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    password?: string;
+  }
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
-  ) => {
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateForm = (): FormErrors => {
+    let newErrors: FormErrors = {};
+    if (!formData.firstName.trim())
+      newErrors.firstName = "First name is required";
+    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email is invalid";
+    }
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+    return newErrors;
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log(formData);
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length === 0) {
+      setIsSubmitting(true);
+      // Here you would typically send the data to your server
+      console.log("Form submitted:", formData);
+      // Simulate API call
+      setTimeout(() => {
+        setIsSubmitting(false);
+        // Reset form after successful submission
+        setFormData({ firstName: "", lastName: "", email: "", password: "" });
+      }, 1000);
+    } else {
+      setErrors(newErrors);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto p-4">
-      <div className="mb-4">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="firstName"
-        >
-          First Name
-        </label>
-        <input
-          type="text"
-          id="firstName"
-          name="firstName"
-          value={formData.firstName}
-          onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-      </div>
-      <div className="mb-4">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="lastName"
-        >
-          Last Name
-        </label>
-        <input
-          type="text"
-          id="lastName"
-          name="lastName"
-          value={formData.lastName}
-          onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-      </div>
-      <div className="mb-4">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="email"
-        >
-          Email
-        </label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-      </div>
-      <div className="mb-4">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="password"
-        >
-          Password
-        </label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-      </div>
-      <div className="mb-4">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="phoneNumber"
-        >
-          Phone Number
-        </label>
-        <input
-          type="text"
-          id="phoneNumber"
-          name="phoneNumber"
-          value={formData.phoneNumber}
-          onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-      </div>
-      <div className="mb-4">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="role"
-        >
-          Role
-        </label>
-        <select
-          id="role"
-          name="role"
-          value={formData.role}
-          onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        >
-          <option value={UserRole.JOB_SEEKER}>Job Seeker</option>
-          <option value={UserRole.EMPLOYER}>Employer</option>
-          <option value={UserRole.ADMIN}>Admin</option>
-        </select>
-      </div>
-      <div className="mb-4">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="profilePicture"
-        >
-          Profile Picture URL
-        </label>
-        <input
-          type="text"
-          id="profilePicture"
-          name="profilePicture"
-          value={formData.profilePicture}
-          onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-      </div>
-      <div className="mb-4">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="location"
-        >
-          Location
-        </label>
-        <input
-          type="text"
-          id="location"
-          name="location"
-          value={formData.location}
-          onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-      </div>
-      <div className="mb-4">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="linkedIn"
-        >
-          LinkedIn
-        </label>
-        <input
-          type="text"
-          id="linkedIn"
-          name="socialLinks.linkedIn"
-          value={formData.socialLinks.linkedIn}
-          onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-      </div>
-      <div className="mb-4">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="github"
-        >
-          GitHub
-        </label>
-        <input
-          type="text"
-          id="github"
-          name="socialLinks.github"
-          value={formData.socialLinks.github}
-          onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-      </div>
-      <div className="mb-4">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="portfolio"
-        >
-          Portfolio
-        </label>
-        <input
-          type="text"
-          id="portfolio"
-          name="socialLinks.portfolio"
-          value={formData.socialLinks.portfolio}
-          onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-      </div>
-      <div className="mb-4">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="isPremium"
-        >
-          Is Premium
-        </label>
-        <input
-          type="checkbox"
-          id="isPremium"
-          name="isPremium"
-          checked={formData.isPremium}
-          onChange={(e) =>
-            setFormData({ ...formData, isPremium: e.target.checked })
-          }
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-      </div>
-      <div className="mb-4">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="jobFitScore"
-        >
-          Job Fit Score
-        </label>
-        <input
-          type="number"
-          id="jobFitScore"
-          name="jobFitScore"
-          value={formData.jobFitScore}
-          onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-      </div>
-      <button
-        type="submit"
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+    <div className="max-w-md w-full space-y-8 sm:max-w-lg md:max-w-xl lg:max-w-2xl">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4"
       >
-        Register
-      </button>
-    </form>
+        <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-6">
+          Register
+        </h2>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div className="space-y-2">
+            <label
+              htmlFor="firstName"
+              className="block text-sm font-medium text-gray-700"
+            >
+              First Name
+            </label>
+            <input
+              id="firstName"
+              name="firstName"
+              type="text"
+              value={formData.firstName}
+              onChange={handleChange}
+              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.firstName ? "border-red-500" : "border-gray-300"
+              }`}
+            />
+            {errors.firstName && (
+              <p className="text-red-500 text-xs italic">{errors.firstName}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <label
+              htmlFor="lastName"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Last Name
+            </label>
+            <input
+              id="lastName"
+              name="lastName"
+              type="text"
+              value={formData.lastName}
+              onChange={handleChange}
+              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.lastName ? "border-red-500" : "border-gray-300"
+              }`}
+            />
+            {errors.lastName && (
+              <p className="text-red-500 text-xs italic">{errors.lastName}</p>
+            )}
+          </div>
+        </div>
+        <div className="mt-6 space-y-2">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Email
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              errors.email ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+          {errors.email && (
+            <p className="text-red-500 text-xs italic">{errors.email}</p>
+          )}
+        </div>
+        <div className="mt-6 space-y-2">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Password
+          </label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              errors.password ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+          {errors.password && (
+            <p className="text-red-500 text-xs italic">{errors.password}</p>
+          )}
+        </div>
+        <div className="mt-8">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+          >
+            {isSubmitting ? "Registering..." : "Register"}
+          </button>
+        </div>
+        {isSubmitting && (
+          <div className="mt-4 p-4 bg-blue-100 text-blue-700 rounded-md">
+            <p>Registration in progress...</p>
+          </div>
+        )}
+      </form>
+    </div>
   );
 };
 
