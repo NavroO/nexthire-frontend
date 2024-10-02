@@ -12,19 +12,19 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex-shrink-0 flex items-center">
             <Link
-              href="/"
+              href="/pages/board"
               className="text-xl font-bold text-gray-800 dark:text-white"
             >
               NextHire
             </Link>
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
-            {/* <Link
-              href="/job-offers"
+            <Link
+              href="/pages/board"
               className="border-transparent text-gray-500 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-700 hover:text-gray-700 dark:hover:text-gray-200 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200"
             >
               Job Offers
-            </Link> */}
+            </Link>
             <Link
               href="/pages/register"
               className="border-transparent text-gray-500 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-700 hover:text-gray-700 dark:hover:text-gray-200 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors duration-200"
