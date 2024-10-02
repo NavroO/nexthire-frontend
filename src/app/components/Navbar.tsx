@@ -31,12 +31,12 @@ export default function Navbar() {
             >
               Register
             </Link>
-            {/* <Link
-              href="/login"
+            <Link
+              href="/pages/login"
               className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
             >
               Login
-            </Link> */}
+            </Link>
           </div>
           <div className="-mr-2 flex items-center sm:hidden">
             <button
